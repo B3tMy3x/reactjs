@@ -22,13 +22,11 @@ export function EditTrip() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, update trip in backend
     navigate(`/trip/${id}`);
   };
 
   const handleDelete = () => {
     if (confirm('Are you sure you want to delete this trip?')) {
-      // In a real app, delete trip from backend
       navigate('/');
     }
   };
