@@ -1,7 +1,7 @@
 import { type FC, useEffect, useMemo } from "react";
 import { initData, type User, useSignal } from "@telegram-apps/sdk-react";
 
-function getUserInfo(user: User) {
+export function getUserInfo(user: User) {
   return {
     id: user.id,
     username: user.username,
@@ -21,13 +21,12 @@ export const InitDataLogger: FC = () => {
   const initDataState = useSignal(initData.state);
 
   useEffect(() => {
-    if (initDataState) {
+    if (initDataState && initDataState.user) {
+      // Safe to access initDataState now
       console.log("Init Data Raw:", initDataRaw);
       console.log("Init Data State:", initDataState);
 
-      if (initDataState.user) {
-        console.log("User Info:", getUserInfo(initDataState.user));
-      }
+      console.log("User Info:", getUserInfo(initDataState.user));
 
       if (initDataState.receiver) {
         console.log("Receiver Info:", getUserInfo(initDataState.receiver));
@@ -54,7 +53,7 @@ export const InitDataLogger: FC = () => {
       console.log("Chat Instance:", initDataState.chatInstance);
       console.log("Start Param:", initDataState.startParam);
     } else {
-      console.warn("Init data is missing!");
+      console.warn("Init data is missing or user data is unavailable!");
     }
   }, [initDataRaw, initDataState]);
 

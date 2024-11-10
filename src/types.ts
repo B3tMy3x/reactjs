@@ -1,7 +1,7 @@
 export interface Trip {
     id: string;
     ticketNumber: string;
-    transportType: 'plane' | 'train' | 'other';
+    transportType: 'airplane' | 'train' | 'other';
     departureDate: string;
     arrivalDate: string;
     origin: string;

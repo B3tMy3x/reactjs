@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plane, Train, Car } from 'lucide-react';
+import axios from 'axios';
 import type { Trip } from '@/types';
 
 export function NewTrip() {
   const navigate = useNavigate();
   const [trip, setTrip] = React.useState<Partial<Trip>>({
-    transportType: 'plane',
+    transportType: 'airplane',
     ticketNumber: '',
     origin: '',
     destination: '',
@@ -14,13 +15,35 @@ export function NewTrip() {
     price: 0
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate('/');
+  const handleSubmit = async (e: React.FormEvent) => {
+    const requestData = {
+      init_data: "string",
+      flight_number: trip.ticketNumber,
+      type: trip.transportType,
+      price: trip.price,
+      where: trip.origin,
+      from_where: trip.destination
+    };
+  
+    try {
+      axios.post('https://prod.bijouterieshop.ru/api/trip', requestData, {
+        headers: {
+          'accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      })
+  
+      .then(response => {
+        console.log(response.data);
+      })
+      navigate('/');
+    } catch (error) {
+      console.error('Error during request:', error);
+    }
   };
 
   const transportTypes = [
-    { type: 'plane', icon: Plane, label: 'Самолет' },
+    { type: 'airplane', icon: Plane, label: 'Самолет' },
     { type: 'train', icon: Train, label: 'Поезд' },
     { type: 'other', icon: Car, label: 'Другое' }
   ];
@@ -50,20 +73,21 @@ export function NewTrip() {
             ))}
           </div>
         </div>
-        { trip.transportType === 'plane' && 
-        <div>
-          <label htmlFor="ticketNumber" className="block text-gray-400 mb-2">
-            Номер рейса
-          </label>
-          <input
-            type="text"
-            id="ticketNumber"
-            value={trip.ticketNumber}
-            onChange={(e) => setTrip({ ...trip, ticketNumber: e.target.value })}
-            className="w-full bg-[#1c2a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#5ebbf6]"
-          />
-        </div>
-        }
+
+        {trip.transportType === 'airplane' && (
+          <div>
+            <label htmlFor="ticketNumber" className="block text-gray-400 mb-2">
+              Номер рейса
+            </label>
+            <input
+              type="text"
+              id="ticketNumber"
+              value={trip.ticketNumber}
+              onChange={(e) => setTrip({ ...trip, ticketNumber: e.target.value })}
+              className="w-full bg-[#1c2a3a] rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#5ebbf6]"
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-4">
           <div>

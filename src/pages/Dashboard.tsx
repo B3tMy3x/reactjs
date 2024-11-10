@@ -1,48 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { Plane, Calendar, Search, Globe, Clock, Wallet, ArrowRight, Bot } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import TripCard from '../components/TripCard';
-import type { Trip } from '../types';
 import { InitDataLogger } from '@/components/InitData';
-
-const mockTrips: Trip[] = [
-  {
-    id: '1',
-    ticketNumber: 'TK123456',
-    transportType: 'plane',
-    departureDate: '2024-03-20T10:00:00',
-    arrivalDate: '2024-03-20T12:00:00',
-    origin: 'Москва',
-    destination: 'Лондон',
-    price: 450,
-    status: 'upcoming'
-  },
-  {
-    id: '2',
-    ticketNumber: 'TR789012',
-    transportType: 'train',
-    departureDate: '2024-03-25T08:00:00',
-    arrivalDate: '2024-03-25T14:00:00',
-    origin: 'Париж',
-    destination: 'Берлин',
-    price: 120,
-    status: 'upcoming'
-  },
-  {
-    id: '3',
-    ticketNumber: 'BA345678',
-    transportType: 'other',
-    departureDate: '2024-03-15T09:00:00',
-    arrivalDate: '2024-03-15T17:00:00',
-    origin: 'Амстердам',
-    destination: 'Брюссель',
-    price: 40,
-    status: 'completed'
-  }
-];
-
+import axios from 'axios';
 const userStats = {
   countriesVisited: 12,
   monthlyExpenses: 1250,
@@ -51,14 +14,37 @@ const userStats = {
 };
 
 export function Dashboard() {
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [trips, setTrips] = useState([]);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Функция для получения данных с сервера
+    const fetchTrips = async () => {
+      try {
+        const userInfo = {
+          init_data: '1',
+        };
+
+        const response = await axios.get('https://prod.bijouterieshop.ru/api/trips', {
+          params: userInfo
+        });
+
+        // Устанавливаем данные поездок в состояние
+        setTrips(response.data);
+      } catch (error) {
+        console.error("Ошибка при загрузке поездок:", error);
+      }
+    };
+
+    fetchTrips();
+  }, []); // Загружаем данные только один раз при монтировании компонента
+
   const filteredTrips = React.useMemo(() => {
-    if (!searchQuery.trim()) return mockTrips;
+    if (!searchQuery.trim()) return trips;
 
     const query = searchQuery.toLowerCase().trim();
-    return mockTrips.filter((trip) => {
+    return trips.filter((trip) => {
       const searchableFields = [
         trip.origin.toLowerCase(),
         trip.destination.toLowerCase(),
@@ -68,7 +54,7 @@ export function Dashboard() {
 
       return searchableFields.some(field => field.includes(query));
     });
-  }, [searchQuery]);
+  }, [searchQuery, trips]);
 
   return (
     <div className="pb-20">

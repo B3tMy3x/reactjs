@@ -5,7 +5,7 @@ import { Trip } from "../types";
 import { Link } from "react-router-dom";
 
 const icons = {
-  plane: Plane,
+  airplane: Plane,
   train: Train,
   other: Car,
 };
