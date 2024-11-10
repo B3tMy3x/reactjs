@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+  --tg-theme-bg-color: #17212b;
+  --tg-theme-text-color: #ffffff;
+  --tg-theme-hint-color: #7d8b99;
+  --tg-theme-link-color: #64b5f6;
+  --tg-theme-button-color: #5288c1;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #242f3d;
+}
+
+body {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+}
+
+.telegram-card {
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.telegram-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.telegram-text-hint {
+  color: var(--tg-theme-hint-color);
+}
+
+.telegram-link {
+  color: var(--tg-theme-link-color);
+}
